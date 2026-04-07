@@ -1,0 +1,102 @@
+
+
+### Fase 1: Reconocimiento y Extracción
+Encontrar la URL (Webhook) escondida.
+
+* **`pwd`** : Para saber en qué ruta exacta te encuentras.
+* **`ls -la`** : Lista todos los archivos (incluso los ocultos).
+* **`cd <carpeta>`** : Para entrar a los directorios. (Usa `cd ..` para retroceder).
+* **`find . -name "*.txt"`** : Busca en todo tu sistema cualquier archivo de texto.
+* **`cat <archivo>`** : Lee el contenido de un archivo.
+
+---
+
+### Fase 2: Interceptando datos
+Nos vamos a conectar al flujo de datos de los sensores y a guardar la evidencia.
+
+**1. Ver el flujo:**
+```bash
+curl -sN http://iotsim.alanrz.bond/stream
+```
+
+**2. Filtrar los datos (buscando en una zona especifica):**
+```bash
+curl -sN http://iotsim.alanrz.bond/stream | grep --line-buffered "ZONA_NORTE"
+```
+
+**3. Creamos un archivo para guardar los datos filtrados**
+```bash
+curl -sN http://iotsim.alanrz.bond/stream >> riego.log
+```
+
+_Presiona `Ctrl + \` para dividir la pantalla en dos. En el nuevo panel derecho, ejecuta `tail -f riego.log` para ver los datos en tiempo real.
+
+
+### Fase 3: Creamos el script
+
+**1. Abre el editor de texto:**
+
+```bash
+nano vigilante.sh
+```
+
+**2. El Código del Vigilante (Copia, pega y edita la URL de Discord):**
+```bash
+#!/bin/bash
+
+# 1. Tu Webhook de comunicaciones
+WEBHOOK_URL="https://discord.com/api/webhooks/TU_URL_AQUI
+
+# 2. Buscamos solo la lectura de la Zona que el operador indique ($1)
+ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1)
+
+# 3. Extraemos la humedad (Columna 10) y limpiamos el símbolo %
+HUMEDAD=$(echo $ULTIMA_LECTURA | awk '{print $10}' | tr -d '%')
+
+# 4. Lógica de Respuesta
+if [ "$HUMEDAD" -lt 30 ]; then
+    clear
+    figlet "CRITICO"
+    echo -e '\a'
+    echo "¡PELIGRO EN $1! Humedad al $HUMEDAD%. Notificando a la red..."
+
+    # Disparo del misil JSON a Discord (Ocultando la salida con /dev/null)
+    MENSAJE="EMERGENCIA EN $1: Humedad crítica del $HUMEDAD%."
+    curl -s -H "Content-Type: application/json" -d '{"content": "'"$MENSAJE"'"}' $WEBHOOK_URL > /dev/null
+else
+    echo "✅ $1 estable. Humedad al $HUMEDAD%."
+fi
+```
+(Para guardar en nano: Presiona `Ctrl+O`, luego `Enter`. Para salir: `Ctrl+X`).
+
+**3. Dale vida (Permisos de ejecución):**
+
+```bash
+chmod +x vigilante.sh
+```
+
+**4.Pruébalo pasándole una Zona como parámetro:**
+```bash
+./vigilante.sh ZONA_NORTE
+```
+
+**5. Atajo con Alias:**  Creamos un comando personalizado que reemplace todo lo anterior:
+
+```bash
+alias auditar='./vigilante.sh'
+```
+
+### Fase 4: Monitoreo Activo
+
+Para no tener que escribir el comando a mano cada vez, obligaremos a Linux a ejecutar tu nuevo comando cada 2 segundos
+
+```bash
+watch -n 2 auditar ZONA_SUR
+```
+
+registra tu éxito en el servidor central enviando este paquete de datos. **Cambia "TuNombre" por tu nombre real o nickname (sin espacios).**
+
+
+```bash
+curl -X POST -d "alumno=TuNombre" https://board.alanrz.bond/graduar
+```
