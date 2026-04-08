@@ -43,8 +43,6 @@ nano vigilante.sh
 **2. El Código del "Vigilante" (Copia, pega y edita la URL de Discord):**
 ```bash
 #!/bin/bash
-
-# 1. Tu Webhook de comunicaciones
 WEBHOOK_URL="https://discord.com/api/webhooks/TU_URL_AQUI"
 
 
