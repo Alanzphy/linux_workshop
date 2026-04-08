@@ -43,25 +43,24 @@ nano vigilante.sh
 **2. El Código del "Vigilante" (Copia, pega y edita la URL de Discord):**
 ```bash
 #!/bin/bash
+
 WEBHOOK_URL="https://discord.com/api/webhooks/TU_URL_AQUI"
 
-
-ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1)
-
-
-HUMEDAD=$(echo $ULTIMA_LECTURA | awk '{print $10}' | tr -d '%')
+ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1) HUMEDAD=$(echo "$ULTIMA_LECTURA" | awk '{print $10}' | tr -d '%')
 
 if [ -z "$HUMEDAD" ]; then
     echo "No hay datos para la zona: $1"
     exit 1
-
+fi
 if [ "$HUMEDAD" -lt 30 ]; then
     clear
     figlet "CRITICO"
     echo -e '\a'
     echo "Peligro en $1! la humedad esta al $HUMEDAD%"
-    MENSAJE="Emergencia en $1: Humedad crítica del $HUMEDAD%."
-    curl -s -H "Content-Type: application/json" -d '{"content": "'"$MENSAJE"'"}' $WEBHOOK_URL > /dev/null
+    MENSAJE="Emergencia en $1: Humedad critica del $HUMEDAD%."
+    curl -s -H "Content-Type: application/json" \
+    -d "{\"content\":\"$MENSAJE\"}" \
+    "$WEBHOOK_URL" > /dev/null
 else
     echo "$1 estable, humedad al $HUMEDAD%."
 fi
