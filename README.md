@@ -45,7 +45,7 @@ nano vigilante.sh
 #!/bin/bash
 
 # 1. Tu Webhook de comunicaciones
-WEBHOOK_URL="https://discord.com/api/webhooks/TU_URL_AQUI
+WEBHOOK_URL="https://discord.com/api/webhooks/TU_URL_AQUI"
 
 
 ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1)
