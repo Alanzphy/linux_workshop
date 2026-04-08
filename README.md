@@ -21,12 +21,12 @@ curl -sN https://iot-proxy.alan2203mx.workers.dev/stream
 
 **2. Filtrar los datos (buscando en una zona especifica):**
 ```bash
-curl -sN https://iot-proxy.alan2203mx.workers.dev/ | grep --line-buffered "ZONA_NORTE"
+curl -sN https://iot-proxy.alan2203mx.workers.dev/stream | grep --line-buffered "ZONA_NORTE"
 ```
 
 **3. Creamos un archivo para guardar los datos filtrados**
 ```bash
-curl -sN https://iot-proxy.alan2203mx.workers.dev/ >> riego.log
+curl -sN https://iot-proxy.alan2203mx.workers.dev/stream >> riego.log
 ```
 
 _Presiona `Ctrl + \` para dividir la pantalla en dos. En el nuevo panel derecho, ejecuta `tail -f riego.log` para ver los datos en tiempo real.
@@ -67,7 +67,7 @@ fi
 ```
 (Para guardar en nano: Presiona `Ctrl+O`, luego `Enter`. Para salir: `Ctrl+X`).
 
-**3. Dale vida (Permisos de ejecución):**
+**3. Dale (Permisos de ejecución):**
 
 ```bash
 chmod +x vigilante.sh
@@ -86,15 +86,27 @@ alias auditar='./vigilante.sh'
 
 ### Fase 4: Monitoreo Activo
 
-Para no tener que escribir el comando a mano cada vez, obligaremos a Linux a ejecutar tu nuevo comando cada 2 segundos
+Para no tener que escribir el comando a mano cada vez, obligaremos a Linux a ejecutar el  comando cada 2 segundos
 
 ```bash
 watch -n 2 auditar ZONA_SUR
 ```
 
-registra tu éxito en el servidor central enviando este paquete de datos. **Cambia "TuNombre" por tu nombre real o nickname (sin espacios).**
+```bash
+crontab -e
+```
+
+2. Agrega esta línea para ejecutar el script cada minuto:
+
+```bash
+* * * * * cd /ruta/a/tu/proyecto && ./vigilante.sh ZONA_SUR >> cron.log 2>&1
+```
+
+
+Por ultimo
+registrate en el servidor enviando una peticion. **Cambia "TuNombre" por tu nombre real o nickname (sin espacios).**
 
 
 ```bash
-curl -X POST -d "alumno=TuNombre" https://board.alan2203mx.workers.dev/
+curl -X POST -d "alumno=TuNombre" https://board.alan2203mx.workers.dev/graduar
 ```
