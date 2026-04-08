@@ -26,7 +26,7 @@ curl -sN https://iot-proxy.alan2203mx.workers.dev/stream | grep --line-buffered 
 
 **3. Creamos un archivo para guardar los datos filtrados**
 ```bash
-curl -sN https://iot-proxy.alan2203mx.workers.dev/stream >> riego.log
+curl -sN https://iot-proxy.alan2203mx.workers.dev/stream >> riego.log 2>/dev/null &
 ```
 
 _Presiona `Ctrl + \` para dividir la pantalla en dos. En el nuevo panel derecho, ejecuta `tail -f riego.log` para ver los datos en tiempo real.
