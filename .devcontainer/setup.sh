@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt-get update
-sudo apt-get install -y figlet
+sudo apt-get install -y figlet cron
 
 mkdir -p ./system/legacy/backups/2026/hidden_config/auth/
 
