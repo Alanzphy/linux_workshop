@@ -46,7 +46,8 @@ nano vigilante.sh
 
 WEBHOOK_URL="https://discord.com/api/webhooks/TU_URL_AQUI"
 
-ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1) HUMEDAD=$(echo "$ULTIMA_LECTURA" | awk '{print $10}' | tr -d '%')
+ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1)
+HUMEDAD=$(echo "$ULTIMA_LECTURA" | awk '{print $10}' | tr -d '%')
 
 if [ -z "$HUMEDAD" ]; then
     echo "No hay datos para la zona: $1"
@@ -89,7 +90,7 @@ alias auditar='./vigilante.sh'
 Para no tener que escribir el comando a mano cada vez, obligaremos a Linux a ejecutar el  comando cada 2 segundos
 
 ```bash
-watch -n 2 auditar ZONA_SUR
+watch -n 2 ./vigilante.sh ZONA_SUR
 ```
 
 ```bash
