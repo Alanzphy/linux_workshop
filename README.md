@@ -16,17 +16,17 @@ Nos vamos a conectar al flujo de datos de los sensores y a guardar la evidencia.
 
 **1. Ver el flujo:**
 ```bash
-curl -sN http://iotsim.alanrz.bond/stream
+curl -sN https://iot-proxy.alan2203mx.workers.dev/stream
 ```
 
 **2. Filtrar los datos (buscando en una zona especifica):**
 ```bash
-curl -sN http://iotsim.alanrz.bond/stream | grep --line-buffered "ZONA_NORTE"
+curl -sN https://iot-proxy.alan2203mx.workers.dev/ | grep --line-buffered "ZONA_NORTE"
 ```
 
 **3. Creamos un archivo para guardar los datos filtrados**
 ```bash
-curl -sN http://iotsim.alanrz.bond/stream >> riego.log
+curl -sN https://iot-proxy.alan2203mx.workers.dev/ >> riego.log
 ```
 
 _Presiona `Ctrl + \` para dividir la pantalla en dos. En el nuevo panel derecho, ejecuta `tail -f riego.log` para ver los datos en tiempo real.
@@ -40,31 +40,29 @@ _Presiona `Ctrl + \` para dividir la pantalla en dos. En el nuevo panel derecho,
 nano vigilante.sh
 ```
 
-**2. El Código del Vigilante (Copia, pega y edita la URL de Discord):**
+**2. El Código del "Vigilante" (Copia, pega y edita la URL de Discord):**
 ```bash
 #!/bin/bash
 
 # 1. Tu Webhook de comunicaciones
 WEBHOOK_URL="https://discord.com/api/webhooks/TU_URL_AQUI
 
-# 2. Buscamos solo la lectura de la Zona que el operador indique ($1)
+
 ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1)
 
-# 3. Extraemos la humedad (Columna 10) y limpiamos el símbolo %
+
 HUMEDAD=$(echo $ULTIMA_LECTURA | awk '{print $10}' | tr -d '%')
 
-# 4. Lógica de Respuesta
+
 if [ "$HUMEDAD" -lt 30 ]; then
     clear
     figlet "CRITICO"
     echo -e '\a'
-    echo "¡PELIGRO EN $1! Humedad al $HUMEDAD%. Notificando a la red..."
-
-    # Disparo del misil JSON a Discord (Ocultando la salida con /dev/null)
-    MENSAJE="EMERGENCIA EN $1: Humedad crítica del $HUMEDAD%."
+    echo "Peligro en $1! la humedad esta al $HUMEDAD%"
+    MENSAJE="Emergencia en $1: Humedad crítica del $HUMEDAD%."
     curl -s -H "Content-Type: application/json" -d '{"content": "'"$MENSAJE"'"}' $WEBHOOK_URL > /dev/null
 else
-    echo "✅ $1 estable. Humedad al $HUMEDAD%."
+    echo "$1 estable, humedad al $HUMEDAD%."
 fi
 ```
 (Para guardar en nano: Presiona `Ctrl+O`, luego `Enter`. Para salir: `Ctrl+X`).
@@ -98,5 +96,5 @@ registra tu éxito en el servidor central enviando este paquete de datos. **Camb
 
 
 ```bash
-curl -X POST -d "alumno=TuNombre" https://board.alanrz.bond/graduar
+curl -X POST -d "alumno=TuNombre" https://board.alan2203mx.workers.dev/
 ```
