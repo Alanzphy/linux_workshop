@@ -53,6 +53,9 @@ ULTIMA_LECTURA=$(grep "$1" riego.log | tail -n 1)
 
 HUMEDAD=$(echo $ULTIMA_LECTURA | awk '{print $10}' | tr -d '%')
 
+if [ -z "$HUMEDAD" ]; then
+    echo "No hay datos para la zona: $1"
+    exit 1
 
 if [ "$HUMEDAD" -lt 30 ]; then
     clear
@@ -104,7 +107,7 @@ crontab -e
 
 
 Por ultimo
-registrate en el servidor enviando una peticion. **Cambia "TuNombre" por tu nombre real o nickname (sin espacios).**
+registrate en el servidor enviando una peticion **Cambia "TuNombre" por tu nombre real o nickname (sin espacios).**
 
 
 ```bash
